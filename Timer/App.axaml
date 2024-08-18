@@ -13,8 +13,4 @@
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
     </Application.Styles>
-
-     <Application.Resources>
-         <FontFamily x:Key="Minecraft">avares://Timer/Assets#Minecraft Rus</FontFamily>
-     </Application.Resources>
 </Application>

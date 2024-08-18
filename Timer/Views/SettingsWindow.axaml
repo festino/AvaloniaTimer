@@ -13,48 +13,52 @@
         <Style Selector="TextBlock.left-column">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="Margin" Value="0,0, 10, 0"/>
+            <Setter Property="Margin" Value="0, 0, 10, 0"/>
         </Style>
-        <Style Selector="Slider">
+        <Style Selector="Slider.horizontal-slider">
             <Setter Property="ToolTip.Tip" Value="{Binding $self.Value, StringFormat='0.##'}"/>
 			<Setter Property="ToolTip.ShowDelay" Value="0"/>
 			<Setter Property="ToolTip.HorizontalOffset" Value="{Binding $self.Value}"/>
 		</Style>
+        <Style Selector="ComboBox /template/ ScrollViewer">
+            <Setter Property="AllowAutoHide" Value="False"/>
+        </Style>
     </Window.Styles>
 
   <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto"
         Margin="5">
       <Grid.Styles>
-          <Style Selector=":nth-child(n):is(Control)[(Grid.Column)=1]">
+          <Style Selector="Grid > :is(Control).right-column">
               <Setter Property="VerticalAlignment" Value="Center" />
               <Setter Property="HorizontalAlignment" Value="Left" />
           </Style>
       </Grid.Styles>
 
       <TextBlock Classes="left-column" Grid.Row="0" Grid.Column="0">Font color:</TextBlock>
-      <ColorPicker Grid.Row="0" Grid.Column="1" Color="{Binding Settings.Foreground}" Margin="0, 0, 0,5"/>
+	  <ColorPicker Classes="right-column" Grid.Row="0" Grid.Column="1" Color="{Binding Settings.Foreground}" Margin="0, 0, 0,5"/>
 
       <TextBlock Classes="left-column" Grid.Row="1" Grid.Column="0">Background:</TextBlock>
-      <ColorPicker Grid.Row="1" Grid.Column="1" Color="{Binding Settings.Background}" Margin="0, 0, 0,5"/>
+	  <ColorPicker Classes="right-column" Grid.Row="1" Grid.Column="1" Color="{Binding Settings.Background}" Margin="0, 0, 0,5"/>
 
 	  <TextBlock Classes="left-column" Grid.Row="2" Grid.Column="0">Font:</TextBlock>
-      <ComboBox Grid.Row="2" Grid.Column="1" Name="FontsComboBox"
+	  <ComboBox Classes="right-column" Grid.Row="2" Grid.Column="1" Name="FontsComboBox"
                 AutoScrollToSelectedItem="True"
-                
                 ItemsSource="{Binding Fonts}" 
                 SelectedItem="{Binding Settings.FontFamily}"/>
 
 	  <TextBlock Classes="left-column" Grid.Row="3" Grid.Column="0">Font size:</TextBlock>
-      <Slider Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="200" Width="200" Value="{Binding Settings.TimeSize}"/>
+	  <Slider Classes="right-column horizontal-slider" Grid.Row="3" Grid.Column="1" 
+              Minimum="1" Maximum="200" Width="200" Value="{Binding Settings.TimeSize}"/>
 
       <TextBlock Classes="left-column" Grid.Row="4" Grid.Column="0">Show ms:</TextBlock>
-      <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding Settings.MsIsEnabled}"/>
+	  <CheckBox Classes="right-column" Grid.Row="4" Grid.Column="1" IsChecked="{Binding Settings.MsIsEnabled}"/>
 
       <TextBlock Classes="left-column" Grid.Row="5" Grid.Column="0">ms font size:</TextBlock>
-      <Slider Grid.Row="5" Grid.Column="1" Minimum="1" Maximum="200" Width="200" Value="{Binding Settings.MsSize}"/>
+	  <Slider Classes="right-column horizontal-slider" Grid.Row="5" Grid.Column="1"
+              Minimum="1" Maximum="200" Width="200" Value="{Binding Settings.MsSize}"/>
 
 	  <TextBlock Classes="left-column" Grid.Row="6" Grid.Column="0">Timer sound:</TextBlock>
-	  <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
+	  <StackPanel Classes="right-column" Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
 		  <Button Click="ChooseTimerFinishedSoundButton_OnClick"
                   ToolTip.Tip="{Binding TimerFinishedSoundName}">
               <TextBlock Text="{Binding TimerFinishedSoundName}"
@@ -68,6 +72,7 @@
           </ToggleButton>
       </StackPanel>
 
-      <Slider Grid.Row="7" Grid.Column="1" Minimum="0" Maximum="1" Width="100" Value="{Binding Settings.TimerFinishedSoundVolume}"/>
+      <Slider Classes="right-column horizontal-slider" Grid.Row="7" Grid.Column="1" 
+          Minimum="0" Maximum="1" Width="100" Value="{Binding Settings.TimerFinishedSoundVolume}"/>
   </Grid>
 </Window>
