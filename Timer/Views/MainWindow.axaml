@@ -1,0 +1,120 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Timer.ViewModels"
+        xmlns:converters="clr-namespace:Timer.Converters"
+        mc:Ignorable="d" d:DesignWidth="" d:DesignHeight=""
+        x:Class="Timer.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Timer"
+        Width="300" Height="200" Focusable="true">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<Window.Resources>
+		<converters:ColorConverter x:Key="ColorConverter"/>
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector=":is(Control).column-stretch">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector=":is(Button).column-stretch > TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector=":is(Button).column-stretch > Panel">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="TextBox.semi-borderless">
+            <Setter Property="BorderBrush" Value="#3F000000"/>
+        </Style>
+        <Style Selector="TextBox.semi-borderless:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="#7F000000"/>
+        </Style>
+        <Style Selector="TextBox.semi-borderless:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="#BF000000"/>
+        </Style>
+    </Window.Styles>
+
+    <StackPanel Orientation="Vertical">
+        <Grid ColumnDefinitions="*, Auto">
+            <StackPanel Orientation="Horizontal">
+                <Button Background="Transparent" Click="ShowSettingsButton_Click">⚙ Settings</Button>
+            </StackPanel>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                       IsVisible="{Binding IsNoSound}"
+                       ToolTip.Tip="Could not load timer sound!">
+                🔇
+            </TextBlock>
+		</Grid>
+
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"
+                    Background="{Binding Settings.Background, Converter={StaticResource ColorConverter}}">
+            <TextBlock Foreground="{Binding Settings.Foreground, Converter={StaticResource ColorConverter}}"
+                       FontFamily="{Binding Settings.FontFamily}"
+                       Text="{Binding Time, StringFormat='hh\\:mm\\:ss'}"
+                       FontSize="{Binding Settings.TimeSize}"/>
+            <TextBlock VerticalAlignment="Bottom"
+                       IsVisible="{Binding Settings.MsIsEnabled}"
+                       Foreground="{Binding Settings.Foreground, Converter={StaticResource ColorConverter}}"
+                       FontFamily="{Binding Settings.FontFamily}"
+                       Text="{Binding Time, StringFormat='\\:fff'}"
+                       FontSize="{Binding Settings.MsSize}"/>
+		</StackPanel>
+
+        <Grid ColumnDefinitions="*, Auto, *, Auto, *">
+			<Grid Grid.Column="1" RowDefinitions="Auto, Auto">
+				<ToggleButton Name="PlayButton"
+                              Classes="column-stretch"
+                              IsChecked="{Binding IsTicking}">
+					<TextBlock Classes="content"/>
+					<ToggleButton.Styles>
+						<Style Selector="ToggleButton TextBlock.content">
+							<Setter Property="Text" Value="Start"/>
+						</Style>
+						<Style Selector="ToggleButton:checked TextBlock.content">
+							<Setter Property="Text" Value="Stop"/>
+						</Style>
+					</ToggleButton.Styles>
+				</ToggleButton>
+				<ToggleButton Grid.Row="1"
+                              Classes="column-stretch"
+                              IsChecked="{Binding IsTimer}">
+                    <Panel>
+                        <TextBlock Classes="stopwatch">0→🕙</TextBlock>
+						<TextBlock Classes="timer">⌛→0</TextBlock>
+                    </Panel>
+                    <ToggleButton.Styles>
+                        <Style Selector="ToggleButton TextBlock.stopwatch">
+                            <Setter Property="IsVisible" Value="True"/>
+                        </Style>
+                        <Style Selector="ToggleButton:checked TextBlock.stopwatch">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </Style>
+                        <Style Selector="ToggleButton TextBlock.timer">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </Style>
+                        <Style Selector="ToggleButton:checked TextBlock.timer">
+                            <Setter Property="IsVisible" Value="True"/>
+                        </Style>
+                    </ToggleButton.Styles>
+				</ToggleButton>
+			</Grid>
+			<Grid Grid.Column="3" RowDefinitions="Auto, Auto">
+                <Button Name="ResetButton" 
+                        Classes="column-stretch"
+                        Command="{Binding Reset}">
+					<TextBlock>Reset</TextBlock>
+                </Button>
+                <TextBox Grid.Row="1" Name="ResetTime" Classes="semi-borderless column-stretch"
+                         Padding="2" MinHeight="0" MinWidth="0"
+                         Text="{Binding ResetTime}"/>
+            </Grid>
+        </Grid>
+    </StackPanel>
+</Window>
