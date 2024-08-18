@@ -9,7 +9,7 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Timer"
-        Width="300" Height="200" Focusable="true">
+        Width="320" Height="200" Focusable="true">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -57,7 +57,7 @@
                     Background="{Binding Settings.Background, Converter={StaticResource ColorConverter}}">
             <TextBlock Foreground="{Binding Settings.Foreground, Converter={StaticResource ColorConverter}}"
                        FontFamily="{Binding Settings.FontFamily}"
-                       Text="{Binding Time, StringFormat='hh\\:mm\\:ss'}"
+                       Text="{Binding FormattedTime}"
                        FontSize="{Binding Settings.TimeSize}"/>
             <TextBlock VerticalAlignment="Bottom"
                        IsVisible="{Binding Settings.MsIsEnabled}"

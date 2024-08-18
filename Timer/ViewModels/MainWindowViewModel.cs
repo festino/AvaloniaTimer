@@ -19,6 +19,8 @@ public partial class MainWindowViewModel : ViewModelBase
 	private TimeSpan _resetTime = TimeSpan.Zero;
 	[ObservableProperty]
 	private bool _isTimer = false;
+	[ObservableProperty]
+	private bool _allowNegativeTime = true;
 
 	private System.Timers.Timer? _timer = null;
 	public bool IsTicking
@@ -30,6 +32,8 @@ public partial class MainWindowViewModel : ViewModelBase
 	public AppSettings Settings { get; init; } = new();
 
 	public bool IsNoSound => Settings.TimerFinishedSound is null;
+
+	public string FormattedTime => (Time.TotalSeconds < 0.0 ? "-" : " ") + Time.ToString("hh\\:mm\\:ss");
 
 	[RelayCommand]
 	public void Reset()
@@ -54,6 +58,12 @@ public partial class MainWindowViewModel : ViewModelBase
 		Settings.TimerFinishedSoundFilepath = "Assets/time_out.mp3";
 		Settings.FontFamily = FontManager.Current.SystemFonts
 			.FirstOrDefault(f => f.Name.Equals("Minecraft Rus"), Settings.FontFamily);
+
+		PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName == nameof(Time))
+				OnPropertyChanged(nameof(FormattedTime));
+		};
 	}
 
 	public void AppSettingsChanged(object? sender, PropertyChangedEventArgs args)
@@ -76,15 +86,18 @@ public partial class MainWindowViewModel : ViewModelBase
 		if (IsTimer)
 		{
 			var time = Time - TimeStep;
-			if (time.TotalSeconds > 0.0)
+			if (time.TotalSeconds <= 0.0 && Time.TotalSeconds > 0.0)
 			{
-				Time = time;
-				return;
+				PlayTimerFinishedSound();
 			}
-			Time = TimeSpan.Zero;
 
-			OnTimerFinished();
-			Stop();
+			if (time.TotalSeconds <= 0.0 && !AllowNegativeTime)
+			{
+				Time = TimeSpan.Zero;
+				Stop();
+			}
+
+			Time = time;
 		}
 		else
 		{
@@ -107,7 +120,7 @@ public partial class MainWindowViewModel : ViewModelBase
 		OnPropertyChanged(nameof(IsTicking));
 	}
 
-	private void OnTimerFinished()
+	private void PlayTimerFinishedSound()
 	{
 		if (Settings.TimerFinishedSound is not null)
 			AudioPlaybackEngine.Instance.PlaySound(Settings.TimerFinishedSound);
